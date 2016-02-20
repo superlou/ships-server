@@ -6,12 +6,84 @@ class Ship
   def initialize(id)
     @id = id
     @position = [0, 0]
-    @velocity = [0, 0]
+    @velocity = [0, 0.1]
     @acceleration = [0, 0]
   end
 
   def update(dt)
     update_physics(dt)
+  end
+
+  def console_config(console_id)
+    case console_id
+    when '0'
+      console_config = {
+        response_type: 'console_config',
+        ship_id: @id,
+        console_id: console_id,
+        controls: [
+          {
+            name: 'accelerate',
+            type: 'control-button',
+            label: 'accelerate',
+          },
+          {
+            name: 'em_stop',
+            type: 'control-button',
+            label: 'em stop'
+          },
+          {
+            name: 'position_x',
+            type: 'control-labeled-data',
+            label: 'X-Pos',
+            bind: 'position_x'
+          },
+          {
+            name: 'position_y',
+            type: 'control-labeled-data',
+            label: 'Y-Pos',
+            bind: 'position_y'
+          }
+        ]
+      }
+    when '1'
+      console_config = {
+        response_type: 'console_config',
+        ship_id: @id,
+        console_id: console_id,
+        controls: [
+          {
+            type: 'control-labeled-data',
+            label: 'position-x',
+            bind: 'position_x'
+          },
+          {
+            type: 'control-labeled-data',
+            label: 'position-y',
+            bind: 'position_y'
+          }
+        ]
+      }
+    end
+
+    return console_config
+  end
+
+  def console_data(console_id)
+    case console_id
+    when '0'
+      {
+        position_x: @position[0],
+        position_y: @position[1]
+      }
+    when '1'
+      {
+        position_x: @position[0],
+        position_y: @position[1]
+      }
+    else
+      { }
+    end
   end
 
   def do(cmd, data)
@@ -32,6 +104,11 @@ class Ship
             {
               type: 'control-button',
               label: 'em stop'
+            },
+            {
+              type: 'control-labeled-data',
+              label: 'position-y',
+              value: 0
             }
           ]
         }

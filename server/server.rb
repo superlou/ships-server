@@ -2,6 +2,7 @@ require 'eventmachine'
 require 'em-websocket'
 require 'json'
 require_relative './ship'
+require_relative './seat'
 
 period = 0.1
 
@@ -10,8 +11,11 @@ EM.run do
     "0" => Ship.new('0')
   }
 
+  @seat_manager = SeatManager.new(@ships)
+
   def update(dt)
     @ships.each {|id, ship| ship.update(dt)}
+    @seat_manager.push_states
   end
 
   EM.add_periodic_timer(period) do
@@ -25,12 +29,19 @@ EM.run do
     ws.onmessage do |msg|
       begin
         msg = JSON.parse msg
-        ship = msg['ship_id']
-        cmd = msg['cmd']
-        response = @ships[ship].do(cmd, msg)
-        ws.send(response.to_json)
       rescue Exception => e
         puts e.message
+        return
+      end
+
+      ship_id = msg['ship_id']
+      cmd = msg['cmd']
+
+      if cmd == "subscribe"
+        console_id = msg['console_id']
+        seat = @seat_manager.add(ship_id, console_id, ws)
+        response = @ships[ship_id].console_config(console_id)
+        seat.send(response)
       end
     end
   end
