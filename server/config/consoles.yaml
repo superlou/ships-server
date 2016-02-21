@@ -4,9 +4,15 @@ consoles:
       - name: accelerate
         type: control-button
         label: accelerate
+        action: accelerate
+      - name: decelerate
+        type: control-button
+        label: decelerate
+        action: decelerate
       - name: em_stop
         type: control-button
         label: "em stop"
+        action: em_stop
       -
         name: position_x
         type: control-labeled-data

@@ -27,6 +27,8 @@ EM.run do
     end
 
     ws.onmessage do |msg|
+      puts msg
+
       begin
         msg = JSON.parse msg
       rescue Exception => e
@@ -45,6 +47,9 @@ EM.run do
         response['console_id'] = console_id
         response['response_type'] = 'console_config'
         seat.send(response)
+      elsif cmd == "command"
+        ship = @seat_manager.seat_for(ws).ship
+        ship.execute(msg['data'])
       end
     end
   end

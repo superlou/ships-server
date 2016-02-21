@@ -13,7 +13,7 @@ class Ship
   def initialize(id)
     @id = id
     @position = [0, 0]
-    @velocity = [0, 0.1]
+    @velocity = [0, 0]
     @acceleration = [0, 0]
 
     @config = YAML.load_file(File.join(__dir__, 'config/consoles.yaml'))
@@ -35,8 +35,22 @@ class Ship
     end
   end
 
+  def execute(details)
+    case details
+    when 'accelerate'
+      @acceleration[1] += 0.1
+    when 'decelerate'
+      @acceleration[1] += -0.1
+    when 'em_stop'
+      @velocity[1] = 0
+      @acceleration[1] = 0
+    end
+  end
+
   def update_physics(dt)
-    @position[0] += @velocity[0] * dt
-    @position[1] += @velocity[1] * dt
+    @position[0] += 0.5 * @acceleration[0] * dt**2 + @velocity[0] * dt
+    @velocity[0] += @acceleration[0] * dt
+    @position[1] += 0.5 * @acceleration[1] * dt**2 + @velocity[1] * dt
+    @velocity[1] += @acceleration[1] * dt
   end
 end
