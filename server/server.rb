@@ -40,7 +40,10 @@ EM.run do
       if cmd == "subscribe"
         console_id = msg['console_id']
         seat = @seat_manager.add(ship_id, console_id, ws)
-        response = @ships[ship_id].console_config(console_id)
+        response = {controls: @ships[ship_id].controls(console_id)}
+        response['ship_id'] = ship_id
+        response['console_id'] = console_id
+        response['response_type'] = 'console_config'
         seat.send(response)
       end
     end

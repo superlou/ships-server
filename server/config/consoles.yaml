@@ -1,0 +1,41 @@
+consoles:
+  '0':
+    controls:
+      - name: accelerate
+        type: control-button
+        label: accelerate
+      - name: em_stop
+        type: control-button
+        label: "em stop"
+      -
+        name: position_x
+        type: control-labeled-data
+        label: X-Pos
+        bindValue: position_x
+        decimals: 2
+      -
+        name: position_y
+        type: control-labeled-data
+        label: Y-Pos
+        bindValue: position_y
+        decimals: 2
+    data:
+        position_x: "@position[0]"
+        position_y: "@position[1]"
+  '1':
+    controls:
+      -
+        name: position_x
+        type: control-labeled-data
+        label: X-Pos
+        bindValue: position_x
+        decimals: 2
+      -
+        name: position_y
+        type: control-labeled-data
+        label: Y-Pos
+        bindValue: position_y
+        decimals: 2
+    data:
+        position_x: "@position[0]"
+        position_y: "@position[1]"
