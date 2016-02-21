@@ -36,14 +36,14 @@ class Ship
             name: 'position_x',
             type: 'control-labeled-data',
             label: 'X-Pos',
-            bind: 'position_x',
+            bindValue: 'position_x',
             decimals: '2'
           },
           {
             name: 'position_y',
             type: 'control-labeled-data',
             label: 'Y-Pos',
-            bind: 'position_y',
+            bindValue: 'position_y',
             decimals: '2'
           }
         ]
@@ -57,12 +57,12 @@ class Ship
           {
             type: 'control-labeled-data',
             label: 'position-x',
-            bind: 'position_x'
+            bindValue: 'position_x'
           },
           {
             type: 'control-labeled-data',
             label: 'position-y',
-            bind: 'position_y'
+            bindValue: 'position_y'
           }
         ]
       }
