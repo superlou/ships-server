@@ -16,11 +16,25 @@ class Ship
     @velocity = [0, 0]
     @acceleration = [0, 0]
 
+    @isAccelerating = false
+    @isDecelerating = false
+
     @config = YAML.load_file(File.join(__dir__, 'config/consoles.yaml'))
   end
 
   def update(dt)
     update_physics(dt)
+
+    if @acceleration[1] > 0
+      @isAccelerating = true
+      @isDecelerating = false
+    elsif @acceleration[1] < 0
+      @isAccelerating = false
+      @isDecelerating = true
+    else
+      @isAccelerating = false
+      @isDecelerating = false
+    end
   end
 
   def controls(console_id)
@@ -30,9 +44,10 @@ class Ship
 
   def console_data(console_id)
     data_templates = @config['consoles'][console_id]['data']
-    data_templates.hmap do |key, value|
+    data = data_templates.hmap do |key, value|
       [key, eval(value)]
     end
+    return data
   end
 
   def execute(details)

@@ -5,10 +5,12 @@ consoles:
         type: control-button
         label: accelerate
         action: accelerate
+        bindActive: isAccelerating
       - name: decelerate
         type: control-button
         label: decelerate
         action: decelerate
+        bindActive: isDecelerating
       - name: em_stop
         type: control-button
         label: "em stop"
@@ -28,6 +30,8 @@ consoles:
     data:
         position_x: "@position[0]"
         position_y: "@position[1]"
+        isAccelerating: "@isAccelerating"
+        isDecelerating: "@isDecelerating"
   '1':
     controls:
       -
