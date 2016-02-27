@@ -1,5 +1,6 @@
 require 'eventmachine'
 require 'yaml'
+require_relative 'component_manager'
 
 class Hash
   def hmap(&block)
@@ -11,6 +12,13 @@ class Ship
   attr_accessor :id, :position, :velocity, :acceleration
 
   def initialize(id)
+    @cm = ComponentManager.new
+    # @cm.add(:bridge, 0, 2, 1000)
+    @cm.add(:engine, 0, 0, 1000)
+    # @cm.add(:thruster, 5, 0, 100)
+    # @cm.add(:thruster, -5, 0, 100)
+    @cm.add(:reactor, 0, 0, 2000)
+
     @id = id
     @position = [0, 0]
     @velocity = [0, 0]
@@ -67,5 +75,7 @@ class Ship
     @velocity[0] += @acceleration[0] * dt
     @position[1] += 0.5 * @acceleration[1] * dt**2 + @velocity[1] * dt
     @velocity[1] += @acceleration[1] * dt
+
+    @cm.update(dt)
   end
 end

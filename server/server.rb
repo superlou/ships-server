@@ -4,6 +4,9 @@ require 'json'
 require_relative './ship'
 require_relative './seat'
 
+project_root = File.dirname(File.absolute_path(__FILE__))
+Dir.glob(project_root + '/components/*') {|file| require file}
+
 period = 0.1
 
 EM.run do
