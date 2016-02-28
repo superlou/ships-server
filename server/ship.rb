@@ -1,5 +1,6 @@
 require 'eventmachine'
 require 'yaml'
+require 'chipmunk'
 require_relative 'component_manager'
 
 class Hash
@@ -9,17 +10,20 @@ class Hash
 end
 
 class Ship
-  attr_accessor :id, :position, :velocity, :acceleration
+  attr_accessor :id, :position, :velocity, :acceleration, :body
 
   def initialize(id)
     @cm = ComponentManager.new
     # @cm.add(:bridge, 0, 2, 1000)
-    @cm.add(:engine, 0, 0, 1000)
+    @cm.add(:engine, -5, 0, 1000)
     # @cm.add(:thruster, 5, 0, 100)
     # @cm.add(:thruster, -5, 0, 100)
-    @cm.add(:reactor, 0, 0, 2000)
+    @cm.add(:reactor, -2, 0, 2000)
 
     @id = id
+
+    @body = CP::Body.new(@cm.mass, @cm.moi)
+
     @position = [0, 0]
     @velocity = [0, 0]
     @acceleration = [0, 0]

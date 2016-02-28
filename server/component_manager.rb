@@ -8,7 +8,7 @@ class ComponentManager
 
   def add(component_class, pos_x, pos_y, mass, options={})
     klass = component_class.to_s.camelize.constantize
-    component = klass.new
+    component = klass.new([pos_x, pos_y], mass)
     @components << component
     @bus.register(component)
   end
@@ -17,6 +17,27 @@ class ComponentManager
     @bus.charge(dt)
     actions = @components.map{|component| component.act(dt, @bus)}
     @bus.cap()
+  end
+
+  def mass
+    @components.map(&:mass).reduce(:+)
+  end
+
+  def com
+    x = @components.map{|c| c.position[0] * c.mass}.reduce(:+) / mass
+    y = @components.map{|c| c.position[1] * c.mass}.reduce(:+) / mass
+    [x, y]
+  end
+
+  def moi
+    mois = @components.map do |component|
+      r_x = component.position[0] - com[0]
+      r_y = component.position[1] - com[1]
+      r = Math::sqrt(r_x ** 2 + r_y ** 2)
+      component.mass * (r ** 2)  # could remove sqrt and squaring
+    end
+    
+    mois.reduce(:+)
   end
 end
 

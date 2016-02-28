@@ -4,6 +4,7 @@ gem 'faye'
 gem 'eventmachine'
 gem 'em-websocket'
 gem 'activesupport'
+gem 'chipmunk'
 
 group :development do
   gem 'guard'

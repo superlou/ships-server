@@ -3,7 +3,8 @@ require_relative 'component'
 class Reactor < Component
   attr_accessor :energy
 
-  def initialize
+  def initialize(position, mass)
+    super(position, mass)
     @is_source = true
     @power = 100
     @energy = 0

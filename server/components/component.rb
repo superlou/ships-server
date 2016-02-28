@@ -1,9 +1,11 @@
 class Component
-  attr_reader :is_source, :energy
+  attr_reader :is_source, :energy, :mass, :position
 
-  def initialize
+  def initialize(position, mass)
     @is_source = false
     @energy = 0
+    @position = position
+    @mass = mass
   end
 
   def charge(dt)

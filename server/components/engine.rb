@@ -1,7 +1,8 @@
 require_relative 'component'
 
 class Engine < Component
-  def initialize
+  def initialize(position, mass)
+    super(position, mass)
     @impulse = 0
     @max_impulse = 100
     @energy_efficiency = 1

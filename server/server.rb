@@ -1,6 +1,7 @@
 require 'eventmachine'
 require 'em-websocket'
 require 'json'
+require 'chipmunk'
 require_relative './ship'
 require_relative './seat'
 
@@ -16,6 +17,11 @@ EM.run do
 
   @seat_manager = SeatManager.new(@ships)
 
+  @space = CP::Space.new
+  @ships.each do |id, ship|
+    @space.add_body(ship.body)
+  end
+
   def update(dt)
     @ships.each {|id, ship| ship.update(dt)}
     @seat_manager.push_states
@@ -23,6 +29,7 @@ EM.run do
 
   EM.add_periodic_timer(period) do
     update(period)
+    @space.step(period)
   end
 
   EM::WebSocket.run(host: "127.0.0.1", port: 8081) do |ws|
