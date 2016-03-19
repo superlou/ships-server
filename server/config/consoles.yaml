@@ -1,5 +1,6 @@
 consoles:
   '0':
+    name: general
     controls:
       - name: accelerate
         type: control-button
@@ -33,6 +34,7 @@ consoles:
         isAccelerating: "@isAccelerating"
         isDecelerating: "@isDecelerating"
   '1':
+    name: main screen
     controls:
       -
         name: main_screen

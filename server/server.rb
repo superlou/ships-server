@@ -11,19 +11,17 @@ Dir.glob(project_root + '/components/*') {|file| require file}
 period = 0.1
 
 EM.run do
-  @ships = {
-    "0" => Ship.new('0')
-  }
+  Ship.new('twocatred')
 
   @seat_manager = SeatManager.new(@ships)
 
   @space = CP::Space.new
-  @ships.each do |id, ship|
+  Ship.all.each do |ship|
     @space.add_body(ship.body)
   end
 
   def update(dt)
-    @ships.each {|id, ship| ship.update(dt)}
+    Ship.all.each {|ship| ship.update(dt)}
     @seat_manager.push_states
   end
 
@@ -60,6 +58,11 @@ EM.run do
       elsif cmd == "command"
         ship = @seat_manager.seat_for(ws).ship
         ship.execute(msg['data'])
+      elsif cmd == "joinShip"
+        ship_id = Integer(msg['shipCode'])
+        ws.send({
+          consoleBriefs: Ship.find(ship_id).console_briefs
+        }.to_json)
       end
     end
   end

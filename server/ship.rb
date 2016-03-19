@@ -2,6 +2,7 @@ require 'eventmachine'
 require 'yaml'
 require 'chipmunk'
 require_relative 'component_manager'
+require_relative 'model'
 
 class Hash
   def hmap(&block)
@@ -9,18 +10,18 @@ class Hash
   end
 end
 
-class Ship
-  attr_accessor :id, :position, :velocity, :acceleration, :body
+class Ship < Model
+  attr_accessor :id, :code, :position, :velocity, :acceleration, :body
 
-  def initialize(id)
+  def initialize(code=nil)
+    super()
+
     @cm = ComponentManager.new
     # @cm.add(:bridge, 0, 2, 1000)
     @cm.add(:engine, -5, 0, 1000)
     # @cm.add(:thruster, 5, 0, 100)
     # @cm.add(:thruster, -5, 0, 100)
     @cm.add(:reactor, -2, 0, 2000)
-
-    @id = id
 
     @body = CP::Body.new(@cm.mass, @cm.moi)
 
@@ -52,6 +53,15 @@ class Ship
   def controls(console_id)
     config = @config['consoles'][console_id]['controls']
     return config
+  end
+
+  def console_briefs
+    return @config['consoles'].map.with_index do |console, i|
+      {
+        id: i,
+        name: console[1]['name']
+      }
+    end
   end
 
   def console_data(console_id)
