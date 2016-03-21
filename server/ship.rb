@@ -20,10 +20,6 @@ class Ship < Model
 
     @body = CP::Body.new(@cm.mass, @cm.moi)
 
-    @position = [0, 0]
-    @velocity = [0, 0]
-    @acceleration = [0, 0]
-
     @isAccelerating = false
     @isDecelerating = false
 
@@ -40,12 +36,10 @@ class Ship < Model
   end
 
   def update(dt)
-    update_physics(dt)
-
-    if @acceleration[1] > 0
+    if @body.f.y > 0
       @isAccelerating = true
       @isDecelerating = false
-    elsif @acceleration[1] < 0
+    elsif @body.f.y < 0
       @isAccelerating = false
       @isDecelerating = true
     else
@@ -65,12 +59,13 @@ class Ship < Model
   def execute(details)
     case details
     when 'accelerate'
-      @acceleration[1] += 0.1
+      @body.reset_forces()
+      @body.apply_force(vec2(0, 100), vec2(0, 0))
     when 'decelerate'
-      @acceleration[1] += -0.1
+      @body.reset_forces()
+      @body.apply_force(vec2(0, -100), vec2(0, 0))
     when 'em_stop'
-      @velocity[1] = 0
-      @acceleration[1] = 0
+      @body.reset_forces()
     end
   end
 

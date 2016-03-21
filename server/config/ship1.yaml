@@ -28,8 +28,8 @@ terminals:
         bindValue: position_y
         decimals: 2
     data:
-        position_x: "@position[0]"
-        position_y: "@position[1]"
+        position_x: "@body.p.x"
+        position_y: "@body.p.y"
         isAccelerating: "@isAccelerating"
         isDecelerating: "@isDecelerating"
   - name: main screen
@@ -40,5 +40,5 @@ terminals:
         bindShipX: position_x
         bindShipY: position_x
     data:
-        position_x: "@position[0]"
-        position_y: "@position[1]"
+        position_x: "@body.p.x"
+        position_y: "@body.p.y"
