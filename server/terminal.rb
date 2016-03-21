@@ -1,7 +1,7 @@
 require_relative 'model'
 
 class Terminal < Model
-  attr_reader :name
+  attr_reader :name, :ship
 
   def initialize(config, ship)
     super()
@@ -19,13 +19,20 @@ class Terminal < Model
     }
   end
 
-  def snapshot
+  def full
     {
       id: self.id,
       name: @name,
       ship_id: @ship.id,
       controls: @controls,
-      terminalData: generate_data
+      terminal_data: generate_data
+    }
+  end
+
+  def data_update
+    {
+      id: self.id,
+      terminal_data: generate_data
     }
   end
 

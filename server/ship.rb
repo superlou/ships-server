@@ -54,11 +54,6 @@ class Ship < Model
     end
   end
 
-  def controls(terminal_id)
-    config = @config['terminals'][terminal_id]['controls']
-    return config
-  end
-
   def terminal_briefs
     @terminals.map{|terminal| terminal.brief}
   end

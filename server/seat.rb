@@ -1,9 +1,10 @@
-class Seat
-  attr_accessor :ship, :console_id, :socket
+require_relative 'ship'
 
-  def initialize(ship, console_id, socket)
-    @ship = ship
-    @console_id = console_id
+class Seat
+  attr_accessor :ship, :terminal, :socket
+
+  def initialize(terminal, socket)
+    @terminal = terminal
     @socket = socket
   end
 
@@ -15,24 +16,23 @@ end
 class SeatManager
   attr_reader :seats
 
-  def initialize(ships=[])
+  def initialize()
     @seats = []
-    @ships = ships
   end
 
-  def add(ship_id, console_id, socket)
-    ship = @ships[ship_id]
-    return nil unless ship
+  def add(terminal_id, socket)
+    terminal = Terminal.find(terminal_id)
+    return nil unless terminal
 
     existing = @seats.find do |seat|
-      seat.ship == ship and seat.console_id == console_id
+      seat.terminal == terminal
     end
 
     if existing
       seat = existing
       seat.socket = socket
     else
-      seat = Seat.new(ship, console_id, socket)
+      seat = Seat.new(terminal, socket)
       @seats << seat
     end
 
@@ -45,12 +45,10 @@ class SeatManager
 
   def push_states
     @seats.each do |seat|
-      data = {}
-      data['console_data'] = seat.ship.console_data(seat.console_id)
-      data['console_id'] = seat.console_id
-      data['ship_id'] = seat.ship.id
-      data['response_type'] = :data_update
-      seat.send(data)
+      terminal = {
+        terminal_update: seat.terminal.data_update,
+      }.to_json
+      seat.send(terminal)
     end
   end
 end

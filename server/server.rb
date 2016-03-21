@@ -14,7 +14,7 @@ period = 0.1
 EM.run do
   Ship.new('twocatred')
 
-  @seat_manager = SeatManager.new(@ships)
+  @seat_manager = SeatManager.new()
 
   @space = CP::Space.new
   Ship.all.each do |ship|
@@ -51,10 +51,11 @@ EM.run do
       if cmd == "subscribe"
         terminal_id = Integer(msg['terminal_id'])
         ws.send({
-          terminal: Terminal.find(terminal_id).snapshot
+          terminal: Terminal.find(terminal_id).full
         }.to_json)
+        @seat_manager.add(terminal_id, ws)
       elsif cmd == "command"
-        ship = @seat_manager.seat_for(ws).ship
+        ship = @seat_manager.seat_for(ws).terminal.ship
         ship.execute(msg['data'])
       elsif cmd == "joinShip"
         ship_id = Integer(msg['shipCode'])
