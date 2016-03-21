@@ -3,12 +3,7 @@ require 'yaml'
 require 'chipmunk'
 require_relative 'component_manager'
 require_relative 'model'
-
-class Hash
-  def hmap(&block)
-    Hash[self.map {|k, v| block.call(k,v) }]
-  end
-end
+require_relative 'terminal'
 
 class Ship < Model
   attr_accessor :id, :code, :position, :velocity, :acceleration, :body
@@ -32,7 +27,16 @@ class Ship < Model
     @isAccelerating = false
     @isDecelerating = false
 
-    @config = YAML.load_file(File.join(__dir__, 'config/consoles.yaml'))
+    config = load_config('ship1')
+    @terminals = config[:terminals].map do |terminal|
+      Terminal.new(terminal, self)
+    end
+  end
+
+  def load_config(file)
+    config = YAML.load_file(File.join(__dir__, "config/#{file}.yaml"))
+    config = config.deep_symbolize_keys
+    return config
   end
 
   def update(dt)
@@ -50,26 +54,17 @@ class Ship < Model
     end
   end
 
-  def controls(console_id)
-    config = @config['consoles'][console_id]['controls']
+  def controls(terminal_id)
+    config = @config['terminals'][terminal_id]['controls']
     return config
   end
 
-  def console_briefs
-    return @config['consoles'].map.with_index do |console, i|
-      {
-        id: i,
-        name: console[1]['name']
-      }
-    end
+  def terminal_briefs
+    @terminals.map{|terminal| terminal.brief}
   end
 
-  def console_data(console_id)
-    data_templates = @config['consoles'][console_id]['data']
-    data = data_templates.hmap do |key, value|
-      [key, eval(value)]
-    end
-    return data
+  def eval_data(template)
+    eval(template)
   end
 
   def execute(details)

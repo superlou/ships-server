@@ -2,8 +2,9 @@ require 'eventmachine'
 require 'em-websocket'
 require 'json'
 require 'chipmunk'
-require_relative './ship'
-require_relative './seat'
+require_relative 'ship'
+require_relative 'seat'
+require_relative 'hash'
 
 project_root = File.dirname(File.absolute_path(__FILE__))
 Dir.glob(project_root + '/components/*') {|file| require file}
@@ -48,20 +49,17 @@ EM.run do
       cmd = msg['cmd']
 
       if cmd == "subscribe"
-        console_id = msg['console_id']
-        seat = @seat_manager.add(ship_id, console_id, ws)
-        response = {controls: @ships[ship_id].controls(console_id)}
-        response['ship_id'] = ship_id
-        response['console_id'] = console_id
-        response['response_type'] = 'console_config'
-        seat.send(response)
+        terminal_id = Integer(msg['terminal_id'])
+        ws.send({
+          terminal: Terminal.find(terminal_id).snapshot
+        }.to_json)
       elsif cmd == "command"
         ship = @seat_manager.seat_for(ws).ship
         ship.execute(msg['data'])
       elsif cmd == "joinShip"
         ship_id = Integer(msg['shipCode'])
         ws.send({
-          consoleBriefs: Ship.find(ship_id).console_briefs
+          terminalBriefs: Ship.find(ship_id).terminal_briefs
         }.to_json)
       end
     end
