@@ -45,10 +45,9 @@ class SeatManager
 
   def push_states
     @seats.each do |seat|
-      terminal = {
+      seat.send({
         terminal_update: seat.terminal.data_update,
-      }.to_json
-      seat.send(terminal)
+      })
     end
   end
 end
