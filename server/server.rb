@@ -55,8 +55,11 @@ EM.run do
         }.to_json)
         @seat_manager.add(terminal_id, ws)
       elsif cmd == "command"
-        ship = @seat_manager.seat_for(ws).terminal.ship
-        ship.execute(msg['data'])
+        seat = @seat_manager.seat_for(ws)
+        if seat
+          ship = seat.terminal.ship
+          ship.execute(msg['data'])
+        end
       elsif cmd == "joinShip"
         ship_id = Integer(msg['shipCode'])
         ws.send({
