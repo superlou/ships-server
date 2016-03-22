@@ -6,11 +6,6 @@ terminals:
         label: accelerate
         action: accelerate
         bindActive: isAccelerating
-      - name: decelerate
-        type: control-button
-        label: decelerate
-        action: decelerate
-        bindActive: isDecelerating
       - name: em_stop
         type: control-button
         label: "em stop"
@@ -27,11 +22,17 @@ terminals:
         label: Y-Pos
         bindValue: position_y
         decimals: 2
+      -
+        name: heading
+        type: control-labeled-data
+        label: Heading
+        bindValue: angle
+        decimals: 0
     data:
         position_x: "@body.p.x"
         position_y: "@body.p.y"
         isAccelerating: "@isAccelerating"
-        isDecelerating: "@isDecelerating"
+        angle: "@body.a*180/3.141592"
   - name: main screen
     controls:
       -
