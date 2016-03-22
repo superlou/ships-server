@@ -1,21 +1,25 @@
 require 'active_support/inflector'
 
 class ComponentManager
-  def initialize
+  attr_reader :bus
+
+  def initialize(ship)
     @bus = Bus.new
+    @ship = ship
     @components = []
   end
 
-  def add(component_class, pos_x, pos_y, mass, options={})
+  def add(component_class, name, pos_x, pos_y, mass, options={})
     klass = component_class.to_s.camelize.constantize
-    component = klass.new([pos_x, pos_y], mass)
+    component = klass.new(name, [pos_x, pos_y], mass)
     @components << component
     @bus.register(component)
   end
 
   def update(dt)
+    @ship.body.reset_forces()
     @bus.charge(dt)
-    actions = @components.map{|component| component.act(dt, @bus)}
+    @components.map{|component| component.act(dt, @ship, @bus)}
     @bus.cap()
   end
 
@@ -36,8 +40,12 @@ class ComponentManager
       r = Math::sqrt(r_x ** 2 + r_y ** 2)
       component.mass * (r ** 2)  # could remove sqrt and squaring
     end
-    
+
     mois.reduce(:+)
+  end
+
+  def get(name)
+    @components.find{|component| component.name == name}
   end
 end
 

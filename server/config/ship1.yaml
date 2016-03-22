@@ -1,12 +1,14 @@
 terminals:
   - name: general
     controls:
-      - name: accelerate
+      -
+        name: accelerate
         type: control-button
         label: accelerate
         action: accelerate
         bindActive: isAccelerating
-      - name: em_stop
+      -
+        name: em_stop
         type: control-button
         label: "em stop"
         action: em_stop
@@ -27,12 +29,17 @@ terminals:
         type: control-labeled-data
         label: Heading
         bindValue: angle
-        decimals: 0
+      -
+        name: energy
+        type: control-labeled-data
+        label: Energy
+        bindValue: energy
     data:
         position_x: "@body.p.x"
         position_y: "@body.p.y"
         isAccelerating: "@isAccelerating"
         angle: "@body.a*180/3.141592"
+        energy: "@cm.bus.available_energy"
   - name: main screen
     controls:
       -

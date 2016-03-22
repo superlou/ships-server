@@ -11,12 +11,9 @@ class Ship < Model
   def initialize(code=nil)
     super()
 
-    @cm = ComponentManager.new
-    # @cm.add(:bridge, 0, 2, 1000)
-    @cm.add(:engine, -5, 0, 1000)
-    # @cm.add(:thruster, 5, 0, 100)
-    # @cm.add(:thruster, -5, 0, 100)
-    @cm.add(:reactor, -2, 0, 2000)
+    @cm = ComponentManager.new(self)
+    @cm.add(:engine, 'engine', -5, 0, 1000)
+    @cm.add(:reactor, 'reactor', -2, 0, 2000)
 
     @body = CP::Body.new(@cm.mass, @cm.moi)
 
@@ -35,12 +32,13 @@ class Ship < Model
   end
 
   def update(dt)
-    @body.reset_forces()
-
     if @isAccelerating
-      angle = @body.a
-      @body.apply_force(vec2(100, 0).rotate(CP::Vec2.for_angle(angle)), vec2(0, 0))
+      @cm.get('engine').set_impulse(40)
+    else
+      @cm.get('engine').set_impulse(0)
     end
+
+    @cm.update(dt)
   end
 
   def execute(details)

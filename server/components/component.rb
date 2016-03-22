@@ -1,7 +1,8 @@
 class Component
-  attr_reader :is_source, :energy, :mass, :position
+  attr_reader :is_source, :energy, :mass, :position, :name
 
-  def initialize(position, mass)
+  def initialize(name, position, mass)
+    @name = name
     @is_source = false
     @energy = 0
     @position = position
@@ -14,6 +15,6 @@ class Component
   def cap
   end
 
-  def act (dt, bus)
+  def act (dt, ship, bus)
   end
 end
