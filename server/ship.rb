@@ -46,9 +46,7 @@ class Ship < Model
   def execute(details)
     case details
     when 'accelerate'
-      @isAccelerating = true
-    when 'em_stop'
-      @isAccelerating = false
+      @isAccelerating = !@isAccelerating
     end
   end
 

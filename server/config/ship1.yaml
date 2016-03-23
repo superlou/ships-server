@@ -17,11 +17,6 @@ terminals:
         action: accelerate
         bindActive: isAccelerating
       -
-        name: em_stop
-        type: control-button
-        label: "em stop"
-        action: em_stop
-      -
         name: position_x
         type: control-labeled-data
         label: X-Pos
