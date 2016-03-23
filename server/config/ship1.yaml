@@ -1,3 +1,12 @@
+components:
+  -
+    name: engine
+    position: -5, 0
+    mass: 500
+  -
+    name: reactor
+    position: -2, 0
+    mass: 2000
 terminals:
   - name: general
     controls:

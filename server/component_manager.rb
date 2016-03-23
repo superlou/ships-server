@@ -16,6 +16,12 @@ class ComponentManager
     @bus.register(component)
   end
 
+  def add_from_config(config)
+    component_class = config[:class] || config[:name]
+    add(component_class, config[:name],
+        config[:position][0].to_i, config[:position][1].to_i, config[:mass])
+  end
+
   def update(dt)
     @ship.body.reset_forces()
     @bus.charge(dt)

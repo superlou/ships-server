@@ -11,15 +11,17 @@ class Ship < Model
   def initialize(code=nil)
     super()
 
+    config = load_config('ship1')
+
     @cm = ComponentManager.new(self)
-    @cm.add(:engine, 'engine', -5, 0, 1000)
-    @cm.add(:reactor, 'reactor', -2, 0, 2000)
+    config[:components].each do |component|
+      @cm.add_from_config(component)
+    end
 
     @body = CP::Body.new(@cm.mass, @cm.moi)
 
     @isAccelerating = false
 
-    config = load_config('ship1')
     @terminals = config[:terminals].map do |terminal|
       Terminal.new(terminal, self)
     end
