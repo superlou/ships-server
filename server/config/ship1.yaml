@@ -1,12 +1,24 @@
 components:
   -
     name: engine
-    position: -5, 0
+    position: [-5, 0]
     mass: 500
   -
     name: reactor
-    position: -2, 0
+    position: [0, 0]
     mass: 2000
+  -
+    name: thruster_left
+    class: thruster
+    position: [2, 1]
+    rotation: -90
+    mass: 100
+  -
+    name: thruster_right
+    class: thruster
+    position: [2, -1]
+    rotation: 90
+    mass: 100
 terminals:
   - name: general
     controls:
@@ -16,6 +28,18 @@ terminals:
         label: accelerate
         action: accelerate
         bindActive: isAccelerating
+      -
+        name: thrust_left
+        type: control-button
+        label: left
+        action: thrust_left
+        bindActive: isTurningLeft
+      -
+        name: thrust_right
+        type: control-button
+        label: right
+        action: thrust_right
+        bindActive: isTurningRight
       -
         name: position_x
         type: control-labeled-data
@@ -34,6 +58,12 @@ terminals:
         label: Heading
         bindValue: angle
       -
+        name: angular_velocty
+        type: control-labeled-data
+        label: ang. vel.
+        bindValue: anglular_velocity
+        decimals: 2
+      -
         name: energy
         type: control-labeled-data
         label: Energy
@@ -42,7 +72,10 @@ terminals:
         position_x: "@body.p.x"
         position_y: "@body.p.y"
         isAccelerating: "@isAccelerating"
-        angle: "@body.a*180/3.141592"
+        isTurningRight: "@isTurningRight"
+        isTurningLeft: "@isTurningLeft"
+        angle: "@body.a * 180/3.141592 % 360"
+        anglular_velocity: "@body.w * 180/3.141592"
         energy: "@cm.bus.available_energy"
   - name: main screen
     controls:

@@ -9,17 +9,25 @@ class ComponentManager
     @components = []
   end
 
-  def add(component_class, name, pos_x, pos_y, mass, options={})
+  def add(component_class, name, pos_x, pos_y, rotation, mass, options={})
     klass = component_class.to_s.camelize.constantize
-    component = klass.new(name, [pos_x, pos_y], mass)
+    component = klass.new(name,
+                          vec2(pos_x, pos_y),
+                          rotation * 3.1415 / 180.0,
+                          mass)
     @components << component
     @bus.register(component)
   end
 
   def add_from_config(config)
     component_class = config[:class] || config[:name]
-    add(component_class, config[:name],
-        config[:position][0].to_i, config[:position][1].to_i, config[:mass])
+    config[:rotation] ||= 0
+    add(component_class,
+        config[:name],
+        config[:position][0].to_i,
+        config[:position][1].to_i,
+        config[:rotation].to_i,
+        config[:mass])
   end
 
   def update(dt)
@@ -34,15 +42,15 @@ class ComponentManager
   end
 
   def com
-    x = @components.map{|c| c.position[0] * c.mass}.reduce(:+) / mass
-    y = @components.map{|c| c.position[1] * c.mass}.reduce(:+) / mass
-    [x, y]
+    x = @components.map{|c| c.position.x * c.mass}.reduce(:+) / mass
+    y = @components.map{|c| c.position.y * c.mass}.reduce(:+) / mass
+    vec2(x, y)
   end
 
   def moi
     mois = @components.map do |component|
-      r_x = component.position[0] - com[0]
-      r_y = component.position[1] - com[1]
+      r_x = component.position.x - com.x
+      r_y = component.position.y - com.y
       r = Math::sqrt(r_x ** 2 + r_y ** 2)
       component.mass * (r ** 2)  # could remove sqrt and squaring
     end

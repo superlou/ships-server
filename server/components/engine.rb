@@ -7,8 +7,8 @@ class Numeric
 end
 
 class Engine < Component
-  def initialize(name, position, mass)
-    super(name, position, mass)
+  def initialize(name, position, rotation, mass)
+    super(name, position, rotation, mass)
     @impulse = 0
     @max_impulse = 100
     @energy_efficiency = 1
@@ -33,8 +33,8 @@ class Engine < Component
 
     force = impulse / dt
 
-    angle = ship.body.a
+    angle = ship.body.a + @rotation
     ship.body.apply_force(vec2(force, 0).rotate(CP::Vec2.for_angle(angle)),
-                          vec2(0, 0))
+                          @position - ship.com)
   end
 end

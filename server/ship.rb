@@ -6,7 +6,7 @@ require_relative 'model'
 require_relative 'terminal'
 
 class Ship < Model
-  attr_accessor :id, :code, :position, :velocity, :acceleration, :body
+  attr_accessor :id, :code, :body
 
   def initialize(code=nil)
     super()
@@ -21,10 +21,16 @@ class Ship < Model
     @body = CP::Body.new(@cm.mass, @cm.moi)
 
     @isAccelerating = false
+    @isTurningLeft = false
+    @isTurningRight = false
 
     @terminals = config[:terminals].map do |terminal|
       Terminal.new(terminal, self)
     end
+  end
+
+  def com
+    @cm.com
   end
 
   def load_config(file)
@@ -34,19 +40,27 @@ class Ship < Model
   end
 
   def update(dt)
-    if @isAccelerating
-      @cm.get('engine').set_impulse(40)
-    else
-      @cm.get('engine').set_impulse(0)
-    end
-
     @cm.update(dt)
+
+    engine_impulse = @isAccelerating ? 40 : 0
+    thruster_right_impulse = @isTurningLeft ? 10 : 0
+    thruster_left_impulse = @isTurningRight ? 10 : 0
+
+    @cm.get('engine').set_impulse(engine_impulse)
+    @cm.get('thruster_right').set_impulse(thruster_right_impulse)
+    @cm.get('thruster_left').set_impulse(thruster_left_impulse)
   end
 
   def execute(details)
     case details
     when 'accelerate'
       @isAccelerating = !@isAccelerating
+    when 'thrust_left'
+      @isTurningLeft = !@isTurningLeft
+      @isTurningRight = false
+    when 'thrust_right'
+      @isTurningRight = !@isTurningRight
+      @isTurningLeft = false
     end
   end
 
